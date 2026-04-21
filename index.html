@@ -1,0 +1,763 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QIN YI - Tab Demo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    .perspective-1000 {
+      perspective: 1000px;
+    }
+    .transform-style-preserve-3d {
+      transform-style: preserve-3d;
+    }
+    .backface-hidden {
+      backface-visibility: hidden;
+    }
+    .rotate-y-180 {
+      transform: rotateY(180deg);
+    }
+  </style>
+</head>
+<body class="min-h-screen text-slate-700">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useMemo, useState } = React;
+
+    const tabs = [
+      { id: "basic", label: "基础信息" },
+      { id: "internship", label: "实习经历" },
+      { id: "content-lab", label: "内容实验" },
+      { id: "ai-project", label: "AI项目" },
+      { id: "skill-canvas", label: "能力画布" },
+      { id: "contact", label: "联系我" }
+    ];
+
+    const tabContent = {
+      basic: {
+        title: "基础信息",
+        profile: {
+          quoteEn: "The Practitioner",
+          quoteZh: "实践者",
+          period: "2021.09 - 2025.06",
+          school: "中南财经政法大学 (211)",
+          program: "经济学拔尖人才实验班 | 推荐免试",
+          achievements: "专业前 10% | 校级优秀毕业生 | 英语六级"
+        },
+        extension: {
+          period: "2025.09 - 2028.06",
+          school: "吉林大学 (985)",
+          program: "区域经济学硕士在读"
+        }
+      },
+      internship: {
+        title: "实习经历",
+        experiences: [
+          {
+            company: "上海得物",
+            role: "招商服务商运营实习生",
+            period: "2024.09 - 2025.02",
+            s: "平台特定类目供给不足，且面临招商成本高、商家出价意愿低、现有激励标准单一等痛点。",
+            t: "主导招商服务商的合规入驻与关系运营，通过策略优化提升招商效率及商家活跃度。",
+            a: [
+              "流程标准化：主动组织跨部门资源评审，梳理入驻卡点并制定 SOP，建立对接群实时解决服务商问题。",
+              "数据驱动管理：利用 VLOOKUP 与数据透视表建立日报/周报体系，监控入驻量、出价率、GMV 等指标，并对异动数据进行专项沟通。",
+              "激励机制迭代：调研竞品政策，结合平台流量机制，配合制定并迭代多版激励标准，将考核维度从单一规模转向“出价率 + GMV”的多维阶梯激励。"
+            ],
+            r: [
+              "成功引入 100+ 家优质服务商。",
+              "有效推动商家出价率提升 20%，并带动 GMV 显著增长。"
+            ]
+          },
+          {
+            company: "橘宜集团",
+            role: "海外 KOL 运营实习生",
+            period: "2025.12 - 2026.03",
+            s: "品牌处于海外扩张阶段，需要在北美 TikTok 平台实现主推产品（如唇粉霜、修容液）的爆发式曝光与销售转化。",
+            t: "负责北美达人的精准开发与全生命周期管理，提升月度合作率与 GMV 产出。",
+            a: [
+              "精准画像建模：根据产品特性筛选匹配达人，累计触达并达成纯佣合作 800+ 人，持续优化回复率。",
+              "全流程链路闭环：独立负责沟通、寄样、内容指导到效果追踪，累计上线视频 1500+ 条，并根据数据表现决策投流或二次深度合作。",
+              "数据复盘优化：深度统计曝光、转化率及 GMV，通过周/月度复盘总结带货方法论。"
+            ],
+            r: [
+              "月 GMV 从 $2000+ 提升至 $5000+，单月爆款带动 GMV 突破 $14,000。",
+              "带货 GMV 两次位列实习生第一，四个月内获得两次额外奖金激励。"
+            ]
+          },
+          {
+            company: "武汉核桃编程",
+            role: "用户运营实习生",
+            period: "2023.07 - 2023.10",
+            s: "需要降低用户拉新成本并提升课程续报率。",
+            t: "策划社交增长活动，并通过精细化运营手段减少用户流失。",
+            a: [
+              "增长活动策划：设计“社交分享得核桃币”激励链路，通过利益点驱动用户自主传播。",
+              "精细化分层运营：利用 Excel 筛选用户状态，针对未续报与已续报用户定向推送差异化话术，实现流失干预与复购引导。"
+            ],
+            r: [
+              "活动日均参与家长达 3000+ 人。",
+              "有效降低了拉新成本，并成功提升了课程续报率。"
+            ]
+          }
+        ]
+      },
+      "content-lab": {
+        title: "内容实验",
+        cards: [
+          {
+            name: "小红书: 知识分享 📕",
+            points: ["单篇浏览量: 100,000+", "获赞与收藏: 6,000+"],
+            profile: {
+              name: "屁桃",
+              handle: "小红书号：1150942021",
+              bio: "经济学读研ing｜去思考、去学习、去积极行动",
+              stats: "555粉丝｜1.1万+获赞与收藏",
+              featured: ["时事分享与思考一：巴以冲突", "亲测好用！我打破信息差的宝藏", "时事分享与思考八：美伊冲突"],
+              coverImage: "file:///C:/Users/86186/.cursor/projects/c-Users-86186-Desktop-AI/assets/c__Users_86186_AppData_Roaming_Cursor_User_workspaceStorage_4a36784b50c35d55a8a8fa90b27df14a_images_125602f8444e388342a6d9a396a6ea1a-4b9927b4-9441-4a90-a280-7902c1279d8b.png",
+              link: "https://xhslink.com/m/4TQk5NY4Vam"
+            }
+          },
+          {
+            name: "公众号: 职行中南 📝",
+            points: ["产出多篇 5000+ 阅读推文", "吸引 1,000+ 粉丝关注"]
+          }
+        ]
+      },
+      "ai-project": {
+        title: "AI项目",
+        description: "独立从0到1搭建AI面试复盘助手，围绕求职用户在模拟面试场景及面试后的复盘场景，完成需求定义、功能拆解与demo验证；基于TRAE实现回答分析、建议、优化生成及追问预测，经多轮迭代提升岗位相关性，形成完整项目案例，可用率达80%以上。",
+        images: [
+          "file:///C:/Users/86186/.cursor/projects/c-Users-86186-Desktop-AI/assets/c__Users_86186_AppData_Roaming_Cursor_User_workspaceStorage_4a36784b50c35d55a8a8fa90b27df14a_images_8be399fa32f229c14fcfaf8c113172ec-f6dd9db7-ac2a-44f4-9f72-a9c4d6d4d119.png",
+          "file:///C:/Users/86186/.cursor/projects/c-Users-86186-Desktop-AI/assets/c__Users_86186_AppData_Roaming_Cursor_User_workspaceStorage_4a36784b50c35d55a8a8fa90b27df14a_images_b34aea622a22b70c15c65ab4086c74b7-891d8acb-94f4-4f5b-9286-235a7238b27e.png"
+        ]
+      },
+      "skill-canvas": {
+        title: "WHY ME?",
+        subtitle: "能力画布 - 点击可查看案例详情",
+        skills: [
+          {
+            id: "operation",
+            icon: "⚡",
+            title: "全链路运营",
+            highlight: "100+服务商入驻 | 3000+日均活跃用户",
+            desc: "具备 B 端赋能与 C 端增长的双向视野",
+            details: [
+              "得物：引入 100+ 家优质服务商",
+              "核桃编程：活动日均参与家长 3000+ 人",
+              "擅长平台运营与增长策略设计"
+            ],
+            color: "from-amber-400/30 to-orange-400/30",
+            borderColor: "border-amber-300/50",
+            textColor: "text-amber-700",
+            glowColor: "shadow-amber-400/30"
+          },
+          {
+            id: "data",
+            icon: "📊",
+            title: "数据驱动",
+            highlight: "商家出价率提升 20% | GMV 指标异动监控",
+            desc: "熟练 SQL/Excel, 擅长从报表中发现业务卡点",
+            details: [
+              "可熟练使用 SQL 进行取数，熟悉基础语句",
+              "建立日报/周报数据监控体系",
+              "商家出价率有效提升 20%",
+              "VLOOKUP + 数据透视表精通",
+              "敏锐的数据异动洞察能力"
+            ],
+            color: "from-cyan-400/30 to-blue-400/30",
+            borderColor: "border-cyan-300/50",
+            textColor: "text-cyan-700",
+            glowColor: "shadow-cyan-400/30"
+          },
+          {
+            id: "global",
+            icon: "🌏",
+            title: "全球增长",
+            highlight: "开发 800+ TikTok 达人 | 单月 $14K GMV",
+            desc: "北美达人全流程管理, 两次获得实习生奖金激励",
+            details: [
+              "橘宜集团：触达并达成纯佣合作 800+ 达人",
+              "月 GMV 从 $2000+ 提升至 $5000+",
+              "单月爆款带动 GMV 突破 $14,000",
+              "两次获得实习生奖金激励"
+            ],
+            color: "from-rose-400/30 to-pink-400/30",
+            borderColor: "border-rose-300/50",
+            textColor: "text-rose-700",
+            glowColor: "shadow-rose-400/30"
+          },
+          {
+            id: "content",
+            icon: "✍️",
+            title: "内容网感",
+            highlight: "小红书单篇 10w+ | 公众号 5000+ 阅读量",
+            desc: "相信 Build in Public, 具备爆款内容操盘逻辑",
+            details: [
+              "小红书：单篇浏览量 100,000+",
+              "获赞与收藏：6,000+",
+              "公众号：多篇 5000+ 阅读推文",
+              "吸引 1000+ 粉丝关注"
+            ],
+            color: "from-violet-400/30 to-purple-400/30",
+            borderColor: "border-violet-300/50",
+            textColor: "text-violet-700",
+            glowColor: "shadow-violet-400/30"
+          },
+          {
+            id: "ai",
+            icon: "🤖",
+            title: "AI 协作",
+            highlight: "AI 面试助手 0-1 | Vibe Coding 实践者",
+            desc: "80% 可用率交付, 极速响应前沿技术的落地应用",
+            details: [
+              "独立从 0 到 1 搭建 AI 面试复盘助手",
+              "基于 TRAE 实现智能分析功能",
+              "可用率达 80% 以上",
+              "Vibe Coding 积极实践者"
+            ],
+            color: "from-emerald-400/30 to-teal-400/30",
+            borderColor: "border-emerald-300/50",
+            textColor: "text-emerald-700",
+            glowColor: "shadow-emerald-400/30"
+          },
+          {
+            id: "strategy",
+            icon: "🎯",
+            title: "策略优化",
+            highlight: "商家出价率提升 20% | 多版激励标准迭代",
+            desc: "深入理解平台流量机制，制定并优化运营策略",
+            details: [
+              "得物：调研竞品激励政策，结合得物「SKU导向、低价优先」的流量机制",
+              "配合 mentor 制定并迭代多版激励标准",
+              "将考核维度从入驻量逐步扩展至出价率与 GMV",
+              "最终有效推动商家出价率提升 20%，并带动 GMV 显著增长"
+            ],
+            color: "from-indigo-400/30 to-blue-500/30",
+            borderColor: "border-indigo-300/50",
+            textColor: "text-indigo-700",
+            glowColor: "shadow-indigo-400/30"
+          }
+        ],
+        summary: "学习快、不怕难的自驱动实习生"
+      },
+      contact: {
+        title: "联系我",
+        subtitle: "期待与你的连接",
+        phone: "18634621071",
+        email: "18634621071@163.com",
+        wechat: "qinyi18634621071"
+      }
+    };
+
+    function App() {
+      const [activeTab, setActiveTab] = useState("basic");
+      const rotatingTitles = useMemo(
+        () => ["互联网运营", "产品经理", "ENFJ", "热爱一切美好", "永远在路上的探索者"],
+        []
+      );
+      const profilePhotos = useMemo(
+        () => [
+          "file:///C:/Users/86186/.cursor/projects/c-Users-86186-Desktop-AI/assets/c__Users_86186_AppData_Roaming_Cursor_User_workspaceStorage_4a36784b50c35d55a8a8fa90b27df14a_images_805ba133e16643a39d24c4d4405c2923-40f94692-4f66-4d9f-be52-804fd4f800a6.png",
+          "file:///C:/Users/86186/.cursor/projects/c-Users-86186-Desktop-AI/assets/c__Users_86186_AppData_Roaming_Cursor_User_workspaceStorage_4a36784b50c35d55a8a8fa90b27df14a_images_3dd1aed620baa6f541e9854b3970b59e-0c3360a2-ff4a-4c76-bd55-9ead31415fd3.png",
+          "file:///C:/Users/86186/.cursor/projects/c-Users-86186-Desktop-AI/assets/c__Users_86186_AppData_Roaming_Cursor_User_workspaceStorage_4a36784b50c35d55a8a8fa90b27df14a_images_4be5d94f3c8fa0bed62cbf6419d24bba-2251ba3f-059d-49fd-acc2-6a135310121f.png"
+        ],
+        []
+      );
+      const [titleIndex, setTitleIndex] = useState(0);
+      const [photoIndex, setPhotoIndex] = useState(0);
+      const [openExperience, setOpenExperience] = useState(0);
+      const [flippedSkill, setFlippedSkill] = useState(null);
+      const sectionIds = useMemo(() => tabs.map((tab) => tab.id), []);
+
+      const renderMetricText = (text) => {
+        const metricPattern = /(\$?\d[\d,]*(?:\+)?%?|\d+\+\s*家|第一|两次)/g;
+        const parts = text.split(metricPattern);
+        return parts.map((part, idx) => {
+          if (!part) return null;
+          const isMetric = metricPattern.test(part);
+          metricPattern.lastIndex = 0;
+          if (!isMetric) return <React.Fragment key={idx}>{part}</React.Fragment>;
+          return (
+            <span key={idx} className="font-semibold text-rose-500 drop-shadow-[0_0_10px_rgba(244,63,94,0.25)]">
+              {part}
+            </span>
+          );
+        });
+      };
+
+      const scrollToSection = (id) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        setActiveTab(id);
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      };
+
+      React.useEffect(() => {
+        const onScroll = () => {
+          let current = sectionIds[0];
+          sectionIds.forEach((id) => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            const top = el.getBoundingClientRect().top;
+            if (top <= 140) current = id;
+          });
+          setActiveTab(current);
+        };
+        window.addEventListener("scroll", onScroll);
+        onScroll();
+        return () => window.removeEventListener("scroll", onScroll);
+      }, [sectionIds]);
+
+      React.useEffect(() => {
+        const timer = window.setInterval(() => {
+          setTitleIndex((prev) => (prev + 1) % rotatingTitles.length);
+        }, 2200);
+        return () => window.clearInterval(timer);
+      }, [rotatingTitles]);
+
+      React.useEffect(() => {
+        const timer = window.setInterval(() => {
+          setPhotoIndex((prev) => (prev + 1) % profilePhotos.length);
+        }, 4000);
+        return () => window.clearInterval(timer);
+      }, [profilePhotos]);
+
+      return (
+        <main className="relative min-h-screen overflow-x-hidden bg-gradient-to-b from-rose-100 via-amber-50 to-sky-100 px-4 py-6 md:px-10">
+          <div className="pointer-events-none absolute -left-24 top-24 h-72 w-72 rounded-full bg-pink-300/40 blur-3xl" />
+          <div className="pointer-events-none absolute right-0 top-0 h-80 w-80 rounded-full bg-yellow-200/40 blur-3xl" />
+          <div className="pointer-events-none absolute bottom-20 right-10 h-80 w-80 rounded-full bg-cyan-200/40 blur-3xl" />
+
+          <div className="relative mx-auto max-w-6xl">
+            <header className="sticky top-4 z-30 mb-10 rounded-2xl border border-white/70 bg-white/55 px-4 py-3 shadow-lg shadow-pink-100/60 backdrop-blur-xl md:px-6">
+              <div className="flex flex-col items-start gap-3 md:flex-row md:items-center md:justify-between">
+                <h1 className="text-lg font-semibold tracking-[0.2em] text-slate-700 md:text-xl">QIN YI</h1>
+                <nav className="flex flex-wrap gap-2">
+                  {tabs.map((tab) => {
+                    const selected = tab.id === activeTab;
+                    return (
+                      <button
+                        key={tab.id}
+                        type="button"
+                        onClick={() => scrollToSection(tab.id)}
+                        className={[
+                          "rounded-full border px-4 py-1.5 text-sm transition",
+                          selected
+                            ? "border-pink-300 bg-pink-100 text-pink-700"
+                            : "border-white/70 bg-white/65 text-slate-600 hover:border-pink-200 hover:bg-pink-50"
+                        ].join(" ")}
+                      >
+                        {tab.label}
+                      </button>
+                    );
+                  })}
+                </nav>
+              </div>
+            </header>
+
+            <section className="relative mb-8 rounded-3xl border border-white/70 bg-white/60 p-8 text-center shadow-xl shadow-pink-100/40">
+              <div className="pointer-events-none absolute left-8 top-6 text-2xl">✨</div>
+              <div className="pointer-events-none absolute right-10 top-8 text-2xl">🚀</div>
+              <div className="pointer-events-none absolute left-12 bottom-10 text-2xl">🌟</div>
+              <div className="pointer-events-none absolute right-16 bottom-8 text-2xl">🌈</div>
+
+              <div className="mb-5">
+                <p className="inline-block rounded-full border border-rose-200 bg-white/75 px-5 py-1.5 text-base font-semibold tracking-[0.08em] text-rose-500 [font-family:'STKaiti','KaiTi','Microsoft_YaHei',serif]">
+                  进步是最性感的事
+                </p>
+              </div>
+
+              <h2 className="text-4xl font-bold text-amber-500 md:text-6xl">Know about QinYi</h2>
+              <p className="mt-3 text-xl font-medium text-rose-500">
+                秦怡| {rotatingTitles[titleIndex]}
+              </p>
+
+            </section>
+
+            <section id="basic" className="mb-6 rounded-3xl border border-white/75 bg-white/65 p-6 shadow-lg shadow-rose-100/50 md:p-8">
+              <h3 className="mb-4 text-2xl font-semibold text-slate-700">{tabContent.basic.title}</h3>
+              <div className="space-y-5">
+                <div className="rounded-2xl border border-white/80 bg-white/70 p-4 md:p-5">
+                  <div className="grid gap-4 md:grid-cols-[240px_1fr] md:gap-6">
+                    <div className="space-y-3">
+                      <div className="relative h-56 overflow-hidden rounded-xl border border-pink-100 bg-pink-50 md:h-72">
+                        {profilePhotos.map((photo, idx) => (
+                          <img
+                            key={photo}
+                            src={photo}
+                            alt="秦怡形象照"
+                            className={[
+                              "absolute inset-0 h-full w-full object-cover transition-opacity duration-700",
+                              idx === photoIndex ? "opacity-100" : "opacity-0"
+                            ].join(" ")}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                    <div className="space-y-4">
+                      <div className="space-y-3 text-slate-600 rounded-xl border border-white/80 bg-white/70 p-4">
+                        <p className="text-sm">{tabContent.basic.profile.period}</p>
+                        <p className="text-lg font-semibold text-slate-700">{tabContent.basic.profile.school}</p>
+                        <p>{tabContent.basic.profile.program}</p>
+                        <div className="border-t border-rose-100 pt-3">
+                          <p>{tabContent.basic.profile.achievements}</p>
+                        </div>
+                      </div>
+                      <div className="space-y-3 text-slate-600 rounded-xl border border-white/80 bg-white/70 p-4">
+                        <p className="text-sm">{tabContent.basic.extension.period}</p>
+                        <p className="text-lg font-semibold text-slate-700">{tabContent.basic.extension.school}</p>
+                        <p>{tabContent.basic.extension.program}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section id="internship" className="mb-6 rounded-3xl border border-white/75 bg-white/65 p-6 shadow-lg shadow-fuchsia-100/50 md:p-8">
+              <h3 className="mb-4 text-2xl font-semibold text-slate-700">{tabContent.internship.title}</h3>
+              <div className="space-y-4">
+                {tabContent.internship.experiences.map((exp, idx) => {
+                  const opened = openExperience === idx;
+                  return (
+                    <article key={exp.company} className="rounded-2xl border border-white/80 bg-white/75 shadow-sm">
+                      <button
+                        type="button"
+                        onClick={() => setOpenExperience(opened ? -1 : idx)}
+                        className="flex w-full items-center justify-between gap-3 px-4 py-4 text-left transition hover:bg-rose-50/60 md:px-5"
+                      >
+                        <div>
+                          <h4 className="text-base font-semibold text-slate-700">{exp.company} | {exp.role}</h4>
+                          <p className="mt-1 text-sm text-slate-500">{exp.period}</p>
+                        </div>
+                        <span className={["text-sm text-rose-500 transition-transform", opened ? "rotate-180" : ""].join(" ")}>▼</span>
+                      </button>
+
+                      <div className={["grid transition-all duration-500", opened ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"].join(" ")}>
+                        <div className="overflow-hidden">
+                          <div className="border-t border-rose-100 px-4 py-4 text-slate-600 md:px-5">
+                            <div className="space-y-3">
+                              <p><span className="font-semibold text-slate-700">S（背景）：</span>{renderMetricText(exp.s)}</p>
+                              <p><span className="font-semibold text-slate-700">T（任务）：</span>{renderMetricText(exp.t)}</p>
+                              <div>
+                                <p className="font-semibold text-slate-700">A（行动）：</p>
+                                <ul className="mt-2 space-y-2">
+                                  {exp.a.map((item) => (
+                                    <li key={item} className="leading-relaxed">- {renderMetricText(item)}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                              <div>
+                                <p className="font-semibold text-slate-700">R（结果）：</p>
+                                <ul className="mt-2 space-y-2">
+                                  {exp.r.map((item) => (
+                                    <li key={item} className="leading-relaxed">- {renderMetricText(item)}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
+            </section>
+
+            <section id="content-lab" className="mb-6 rounded-3xl border border-white/75 bg-white/65 p-6 shadow-lg shadow-violet-100/40 md:p-8">
+              <h3 className="mb-4 text-2xl font-semibold text-slate-700">{tabContent["content-lab"].title}</h3>
+              <div className="space-y-4">
+                {(() => {
+                  const xhsCard = tabContent["content-lab"].cards[0];
+                  const wechatCard = tabContent["content-lab"].cards[1];
+                  return (
+                    <>
+                      <article className="rounded-2xl border border-white/80 bg-white/70 p-4 transition hover:-translate-y-0.5 hover:shadow-md">
+                        <h4 className="mb-3 text-base font-semibold text-slate-700">{xhsCard.name}</h4>
+                        <div className="space-y-2 text-slate-600">
+                          {xhsCard.points.map((point) => (
+                            <p key={point}>{point}</p>
+                          ))}
+                        </div>
+                        {xhsCard.profile ? (
+                          <div className="mt-4 rounded-xl border border-rose-100 bg-rose-50/60 p-3 text-sm text-slate-600">
+                            <div className="grid gap-2 md:grid-cols-[225px_1fr] md:items-stretch">
+                              <a
+                                href={xhsCard.profile.link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="block overflow-hidden rounded-lg border border-rose-100"
+                              >
+                                <img
+                                  src={xhsCard.profile.coverImage}
+                                  alt="小红书主页内容预览"
+                                  className="h-full min-h-64 w-full object-cover transition hover:scale-[1.01]"
+                                />
+                              </a>
+                              <div>
+                                <p className="font-semibold text-slate-700">{xhsCard.profile.name}</p>
+                                <p className="mt-1">{xhsCard.profile.handle}</p>
+                                <p className="mt-1 text-slate-500">{xhsCard.profile.bio}</p>
+                                <p className="mt-2 text-rose-500">{xhsCard.profile.stats}</p>
+                                <div className="mt-2 space-y-1 text-slate-600">
+                                  {xhsCard.profile.featured.map((item) => (
+                                    <p key={item}>- {item}</p>
+                                  ))}
+                                </div>
+                                <a
+                                  href={xhsCard.profile.link}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="mt-3 inline-block rounded-full border border-rose-200 bg-white px-3 py-1 text-rose-500 transition hover:bg-rose-100"
+                                >
+                                  点击查看小红书主页
+                                </a>
+                              </div>
+                            </div>
+                          </div>
+                        ) : null}
+                      </article>
+
+                      <article className="rounded-2xl border border-white/80 bg-white/70 p-4 transition hover:-translate-y-0.5 hover:shadow-md">
+                        <h4 className="mb-3 text-base font-semibold text-slate-700">{wechatCard.name}</h4>
+                        <div className="space-y-2 text-slate-600">
+                          {wechatCard.points.map((point) => (
+                            <p key={point}>{point}</p>
+                          ))}
+                        </div>
+                      </article>
+                    </>
+                  );
+                })()}
+              </div>
+            </section>
+
+            <section id="ai-project" className="mb-6 rounded-3xl border border-white/75 bg-white/65 p-6 shadow-lg shadow-cyan-100/40 md:p-8">
+              <h3 className="mb-4 text-2xl font-semibold text-slate-700">{tabContent["ai-project"].title}</h3>
+              <div className="rounded-2xl border border-white/80 bg-white/70 p-5 md:p-6">
+                <p className="leading-relaxed text-slate-600">{tabContent["ai-project"].description}</p>
+                <div className="mt-4 grid gap-3 md:grid-cols-2">
+                  {tabContent["ai-project"].images.map((img, idx) => (
+                    <a
+                      key={img}
+                      href="../ai demo/index.html"
+                      className="block overflow-hidden rounded-xl border border-cyan-100 bg-white"
+                    >
+                      <img
+                        src={img}
+                        alt={`AI面试复盘助手界面截图 ${idx + 1}`}
+                        className="h-52 w-full object-cover transition hover:scale-[1.01]"
+                      />
+                    </a>
+                  ))}
+                </div>
+                <a
+                  href="../ai demo/index.html"
+                  className="mt-4 inline-block rounded-full border border-cyan-200 bg-white px-4 py-1.5 text-sm text-cyan-600 transition hover:bg-cyan-50"
+                >
+                  点击加入demo网页
+                </a>
+              </div>
+            </section>
+
+            <section id="skill-canvas" className="mb-10 rounded-3xl border border-white/75 bg-white/65 p-6 shadow-lg shadow-amber-100/40 md:p-8">
+              <div className="mb-6 text-center">
+                <h3 className="text-2xl font-semibold text-slate-700">{tabContent["skill-canvas"].title}</h3>
+                <p className="mt-1 text-base text-slate-500">{tabContent["skill-canvas"].subtitle}</p>
+              </div>
+
+              {/* 星光装饰 */}
+              <div className="pointer-events-none absolute left-[15%] top-[20%] text-xl animate-pulse">✨</div>
+              <div className="pointer-events-none absolute right-[20%] top-[25%] text-lg animate-pulse" style={{animationDelay: '0.5s'}}>⭐</div>
+              <div className="pointer-events-none absolute left-[25%] bottom-[30%] text-lg animate-pulse" style={{animationDelay: '1s'}}>🌟</div>
+              <div className="pointer-events-none absolute right-[15%] bottom-[25%] text-xl animate-pulse" style={{animationDelay: '1.5s'}}>✨</div>
+
+              {/* 技能卡片网格 */}
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {tabContent["skill-canvas"].skills.map((skill) => {
+                  const isFlipped = flippedSkill === skill.id;
+                  return (
+                    <div
+                      key={skill.id}
+                      onClick={() => setFlippedSkill(isFlipped ? null : skill.id)}
+                      className="relative h-48 cursor-pointer perspective-1000"
+                    >
+                      <div
+                        className={[
+                          "relative h-full w-full transition-all duration-500 transform-style-preserve-3d",
+                          isFlipped ? "rotate-y-180" : ""
+                        ].join(" ")}
+                      >
+                        {/* 正面 */}
+                        <div
+                          className={[
+                            "absolute inset-0 backface-hidden rounded-2xl border bg-gradient-to-br p-4 shadow-lg backdrop-blur-sm",
+                            skill.borderColor,
+                            skill.color,
+                            skill.glowColor
+                          ].join(" ")}
+                        >
+                          <div className="flex h-full flex-col justify-between">
+                            <div>
+                              <div className="mb-2 text-3xl">{skill.icon}</div>
+                              <h4 className={["text-lg font-bold", skill.textColor].join(" ")}>
+                                {skill.title}
+                              </h4>
+                            </div>
+                            <div>
+                              <p className="text-sm font-semibold text-slate-700">{skill.highlight}</p>
+                              <p className="mt-1 text-xs text-slate-500">{skill.desc}</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* 背面 */}
+                        <div
+                          className={[
+                            "absolute inset-0 backface-hidden rotate-y-180 rounded-2xl border bg-white/90 p-4 shadow-lg backdrop-blur-sm",
+                            skill.borderColor
+                          ].join(" ")}
+                        >
+                          <div className="flex h-full flex-col">
+                            <h4 className={["mb-2 text-sm font-bold", skill.textColor].join(" ")}>
+                              {skill.title} · 案例详情
+                            </h4>
+                            <ul className="flex-1 space-y-1 overflow-y-auto">
+                              {skill.details.map((detail, idx) => (
+                                <li key={idx} className="text-xs leading-relaxed text-slate-600">
+                                  • {detail}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Summary */}
+              <div className="mt-6 rounded-2xl border border-white/80 bg-white/70 p-4 text-center">
+                <p className="text-sm font-medium text-slate-600">
+                  <span className="text-rose-500">SUMMARY:</span> {tabContent["skill-canvas"].summary}
+                </p>
+              </div>
+            </section>
+
+            <section id="contact" className="mb-10 rounded-3xl border border-white/75 bg-white/65 p-6 shadow-lg shadow-purple-100/40 md:p-8">
+              <div className="mb-6 text-center">
+                <h3 className="text-2xl font-semibold text-slate-700">{tabContent.contact.title}</h3>
+                <p className="mt-1 text-base text-slate-500">{tabContent.contact.subtitle}</p>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-3">
+                {/* 电话 */}
+                <a
+                  href={`tel:${tabContent.contact.phone}`}
+                  className="flex flex-col items-center rounded-2xl border border-white/80 bg-white/70 p-6 text-center shadow-sm transition hover:scale-105 hover:shadow-md"
+                >
+                  <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-rose-400/30 to-pink-400/30 text-rose-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                    </svg>
+                  </div>
+                  <h4 className="text-sm font-semibold text-slate-700">电话</h4>
+                  <p className="mt-1 text-base font-medium text-rose-600">{tabContent.contact.phone}</p>
+                  <p className="mt-2 text-xs text-slate-400">点击直接拨打</p>
+                </a>
+
+                {/* 邮箱 */}
+                <a
+                  href={`mailto:${tabContent.contact.email}`}
+                  className="flex flex-col items-center rounded-2xl border border-white/80 bg-white/70 p-6 text-center shadow-sm transition hover:scale-105 hover:shadow-md"
+                >
+                  <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-cyan-400/30 to-blue-400/30 text-cyan-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <rect width="20" height="16" x="2" y="4" rx="2"/>
+                      <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+                    </svg>
+                  </div>
+                  <h4 className="text-sm font-semibold text-slate-700">邮箱</h4>
+                  <p className="mt-1 break-all text-sm font-medium text-cyan-600">{tabContent.contact.email}</p>
+                  <p className="mt-2 text-xs text-slate-400">点击发送邮件</p>
+                </a>
+
+                {/* 微信 */}
+                <div
+                  onClick={() => {
+                    navigator.clipboard.writeText(tabContent.contact.wechat).then(() => {
+                      alert('微信号已复制：' + tabContent.contact.wechat);
+                    }).catch(() => {
+                      const textarea = document.createElement('textarea');
+                      textarea.value = tabContent.contact.wechat;
+                      textarea.style.position = 'fixed';
+                      textarea.style.opacity = '0';
+                      document.body.appendChild(textarea);
+                      textarea.select();
+                      document.execCommand('copy');
+                      document.body.removeChild(textarea);
+                      alert('微信号已复制：' + tabContent.contact.wechat);
+                    });
+                  }}
+                  className="flex cursor-pointer flex-col items-center rounded-2xl border border-white/80 bg-white/70 p-6 text-center shadow-sm transition hover:scale-105 hover:shadow-md"
+                >
+                  <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400/30 to-teal-400/30 text-emerald-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M8.691 2.188C3.891 2.188 0 5.476 0 9.53c0 2.212 1.17 4.203 3.002 5.55a.59.59 0 0 1 .213.665l-.39 1.48c-.019.07-.048.141-.048.213 0 .163.13.295.29.295a.326.326 0 0 0 .167-.054l1.903-1.114a.864.864 0 0 1 .717-.098 10.16 10.16 0 0 0 2.837.403c.276 0 .543-.027.811-.05-.857-2.578.157-4.972 1.932-6.446 1.703-1.415 3.882-1.98 5.853-1.838-.576-3.583-4.196-6.348-8.596-6.348zM5.785 5.991c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 0 1-1.162 1.178A1.17 1.17 0 0 1 4.623 7.17c0-.651.52-1.18 1.162-1.18zm5.813 0c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 0 1-1.162 1.178 1.17 1.17 0 0 1-1.162-1.178c0-.651.52-1.18 1.162-1.18zm5.34 2.867c-1.797-.052-3.746.512-5.28 1.786-1.72 1.428-2.687 3.72-1.78 6.22.942 2.453 3.666 4.229 6.884 4.229.826 0 1.622-.12 2.361-.336a.722.722 0 0 1 .598.082l1.584.926a.272.272 0 0 0 .14.047c.134 0 .24-.111.24-.247 0-.06-.023-.12-.038-.177l-.327-1.233a.582.582 0 0 1-.023-.156.49.49 0 0 1 .201-.398C23.024 18.48 24 16.82 24 14.98c0-3.21-2.931-5.837-6.656-6.088V8.89c-.135-.01-.27-.027-.407-.03zm-2.53 3.274c.535 0 .969.44.969.982a.976.976 0 0 1-.969.983.976.976 0 0 1-.969-.983c0-.542.434-.982.97-.982zm4.844 0c.535 0 .969.44.969.982a.976.976 0 0 1-.969.983.976.976 0 0 1-.969-.983c0-.542.434-.982.969-.982z"/>
+                    </svg>
+                  </div>
+                  <h4 className="text-sm font-semibold text-slate-700">微信</h4>
+                  <p className="mt-1 text-sm font-medium text-emerald-600">{tabContent.contact.wechat}</p>
+                  <p className="mt-2 text-xs text-slate-400">点击复制微信号</p>
+                </div>
+              </div>
+
+              {/* 简历下载 */}
+              <a
+                href="./秦怡-中南财本吉大硕-可实习六个月-一周五天.pdf"
+                download="秦怡-中南财本吉大硕-可实习六个月-一周五天.pdf"
+                className="mt-6 flex w-full items-center justify-center gap-3 rounded-2xl border border-white/80 bg-gradient-to-r from-indigo-400/30 to-purple-400/30 p-5 text-center shadow-sm transition hover:scale-[1.02] hover:shadow-md"
+              >
+                <span className="text-2xl">📄</span>
+                <div>
+                  <p className="text-base font-bold text-slate-700">获取我的 PDF 完整简历</p>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-600">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="7 10 12 15 17 10"/>
+                  <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+              </a>
+            </section>
+          </div>
+
+          {/* 悬浮下载简历按钮 */}
+          <a
+            href="./秦怡-中南财本吉大硕-可实习六个月-一周五天.pdf"
+            download="秦怡-中南财本吉大硕-可实习六个月-一周五天.pdf"
+            className="fixed top-6 left-6 z-50 flex items-center gap-2 rounded-full border-2 border-white bg-gradient-to-r from-rose-500 to-pink-500 px-5 py-3 text-sm font-bold text-white shadow-xl shadow-rose-400/40 transition hover:scale-110 hover:shadow-2xl hover:shadow-rose-500/50 active:scale-95"
+            title="下载简历"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            下载简历
+          </a>
+        </main>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>
