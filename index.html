@@ -545,9 +545,10 @@
                 <p className="leading-relaxed text-slate-600">{tabContent["ai-project"].description}</p>
                 <div className="mt-4 grid gap-3 md:grid-cols-2">
                   {tabContent["ai-project"].images.map((img, idx) => (
-                    <div
+                    <a
                       key={img}
-                      onClick={() => window.open('/aidemo.html', '_blank')}
+                      href="./aidemo.html"
+                      target="_blank"
                       className="block cursor-pointer overflow-hidden rounded-xl border border-cyan-100 bg-white"
                     >
                       <img
@@ -555,15 +556,16 @@
                         alt={`AI面试复盘助手界面截图 ${idx + 1}`}
                         className="h-52 w-full object-cover transition hover:scale-[1.01]"
                       />
-                    </div>
+                    </a>
                   ))}
                 </div>
-                <button
-                  onClick={() => window.open('/aidemo.html', '_blank')}
+                <a
+                  href="./aidemo.html"
+                  target="_blank"
                   className="mt-4 inline-block rounded-full border border-cyan-200 bg-white px-4 py-1.5 text-sm text-cyan-600 transition hover:bg-cyan-50"
                 >
                   点击加入demo网页
-                </button>
+                </a>
               </div>
             </section>
 
